@@ -380,3 +380,13 @@ config_vscode: |$(VSCODE_DIR)
 
 $(VSCODE_DIR):
 	$(QUIET) mkdir -p $(VSCODE_DIR)
+
+define NEWLINE
+
+
+endef
+
+CLANGD_CFG = $(PROJECT_DIR)/compile_flags.txt
+
+config_clangd:
+	@echo "Creating or replacing $(CLANGD_CFG) $(file >$(CLANGD_CFG),$(subst $(SPACE),$(NEWLINE),$(patsubst %,-I%,$(MY_INCLUDES)) $(patsubst %,-D%,$(DEFINES)) -Wall -Wextra -Wpedantic -std=c99 $(NEWLINE)))"
