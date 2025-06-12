@@ -389,3 +389,9 @@ vscode: |$(VSCODE_DIR)
 
 $(VSCODE_DIR):
 	-@mkdir -p $(VSCODE_DIR)
+
+CLANGD_CFG = $(PROJECT_DIR)/compile_flags.txt
+
+config_clangd:
+	@echo "Creating or replacing $(CLANGD_CFG)"
+	@echo '$(subst ','\'',$(subst $(SPACE),\n,$(patsubst %,-I%,$(MY_INCLUDES)) $(patsubst %,-D%,$(DEFINES)) -Wall -Wextra -Wpedantic -std=c99\n))' >$(CLANGD_CFG)
