@@ -373,7 +373,7 @@ define vscode_c_config
             "defines": [$(call json_list,$(DEFINES))],
             "cStandard": "c99",
             "intelliSenseMode": "$${default}",
-            "compilerPath":"$(subst \,\\,$(shell $(CC) -v 2>&1 | awk '/COLLECT_GCC=/ {sub(/[^=]+=/,"");print}'))"
+            "compilerPath":"$(subst \,\\\\,$(shell $(CC) -v 2>&1 | awk '/COLLECT_GCC=/ {sub(/[^=]+=/,"");print}'))"
         }
     ],
 	"version": 4
@@ -385,13 +385,13 @@ VSCODE_CFG=$(VSCODE_DIR)/c_cpp_properties.json
 
 vscode: |$(VSCODE_DIR)
 	@echo "Creating or replacing $(VSCODE_CFG)"
-	@echo '$(subst $(NEWLINE),\n,${vscode_c_config})' > $(VSCODE_CFG)
+	@echo -e '$(subst $(NEWLINE),\n,${vscode_c_config})' > $(VSCODE_CFG)
 
 $(VSCODE_DIR):
 	-@mkdir -p $(VSCODE_DIR)
 
 CLANGD_CFG = $(PROJECT_DIR)/compile_flags.txt
 
-config_clangd:
+clangd:
 	@echo "Creating or replacing $(CLANGD_CFG)"
-	@echo '$(subst ','\'',$(subst $(SPACE),\n,$(patsubst %,-I%,$(MY_INCLUDES)) $(patsubst %,-D%,$(DEFINES)) -Wall -Wextra -Wpedantic -std=c99\n))' >$(CLANGD_CFG)
+	@echo -e '$(subst ','\'',$(subst $(SPACE),\n,$(patsubst %,-I%,$(VSCODE_INCLUDES)) $(patsubst %,-D%,$(DEFINES)) -Wall -Wextra -Wpedantic -std=c99))' >$(CLANGD_CFG)
